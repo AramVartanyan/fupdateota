@@ -1,0 +1,36 @@
+menu "Firmware update"
+
+    config FIRMWARE_UPGRADE_URL
+        string "Firmware Upgrade URL"
+        default "https://raw.githubusercontent.com/AramVartanyan/otafw/master/project.bin"
+        help
+            URL of server which hosts the firmware image. Could be https if the certificate is known.
+
+    config SKIP_COMMON_NAME_CHECK
+        bool "Skip server certificate CN fieldcheck"
+        default y
+        help
+            This allows you to skip the validation of OTA server certificate CN field.
+            
+    config USE_CERT_BUNDLE
+        bool "Enable certificate bundle"
+        default y
+        depends on MBEDTLS_CERTIFICATE_BUNDLE
+        help
+            Enable trusted root certificate bundle. This approach allows to have
+            OTA updates functional with any public server without requirement
+            to explicitly add its server certificate.
+
+    config SKIP_VERSION_CHECK
+        bool "Skip firmware version check"
+        default n
+        help
+            This allows you to skip the firmware version check.
+
+    config OTA_RECV_TIMEOUT
+        int "OTA Receive Timeout"
+        default 5000
+        help
+            Maximum time for reception
+
+endmenu
