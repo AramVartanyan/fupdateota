@@ -1,0 +1,2 @@
+# fupdateota
+helper for OTA
