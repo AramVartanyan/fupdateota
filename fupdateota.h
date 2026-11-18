@@ -10,6 +10,7 @@
 #define _FUPDATEOTA_H_
 
 #pragma once
+#include <stdbool.h>
 #include <esp_err.h>
 
 #ifdef __cplusplus
