@@ -44,7 +44,11 @@
 #include <esp_ota_ops.h>
 #include <esp_http_client.h>
 #include <esp_https_ota.h>
-#include <hap.h>            /* hap_get_paired_controller_count() (otaUpdate guard) */
+#ifdef CONFIG_FUPDATEOTA_HAP_PAIRED_ONLY
+/* esp-homekit-sdk (hap.h), as a weak reference: resolved when the project has HomeKit, NULL
+ * otherwise - the component needs no esp_hap_core requirement and works in any project. */
+extern int hap_get_paired_controller_count(void) __attribute__((weak));
+#endif
 
 #include "fupdateota.h"
 
@@ -663,10 +667,12 @@ bool otaUpdate(void)
     /* Never disturb the initial pairing window: an unpaired accessory skips
      * OTA. A manual trigger can only arrive from a paired controller, so
      * this check can only ever filter automated callers. */
-    if (hap_get_paired_controller_count() == 0) {
+#ifdef CONFIG_FUPDATEOTA_HAP_PAIRED_ONLY
+    if (hap_get_paired_controller_count && hap_get_paired_controller_count() == 0) {
         ESP_LOGW(TAG, "Accessory is not paired yet - skipping OTA");
         return false;
     }
+#endif
 #ifdef CONFIG_IDF_TARGET_ESP8266
     /* Stage the update for the next boot (clean heap) and restart. */
     otaUpdateStatus = FW_UPG_STATUS_UPGRADING;

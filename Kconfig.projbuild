@@ -27,6 +27,16 @@ menu "Firmware update"
         help
             This allows you to skip the firmware version check.
 
+    config FUPDATEOTA_HAP_PAIRED_ONLY
+        bool "Update only when paired with HomeKit (esp-homekit-sdk)"
+        default y
+        help
+            otaUpdate() does nothing while the HomeKit accessory is not paired, so the initial
+            pairing window is never disturbed (a manual trigger can only come from a paired
+            controller anyway). Works with esp-homekit-sdk in the project; without it the check
+            is skipped by itself (nothing else to change). Turn it off to update also an
+            unpaired HomeKit accessory.
+
     config OTA_RECV_TIMEOUT
         int "OTA Receive Timeout"
         default 5000
